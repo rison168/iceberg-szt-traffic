@@ -8,12 +8,30 @@
     <artifactId>iceberg-szt-traffic</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <scala.version>2.12.0</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
+        <flink.version>1.13.2</flink.version>
+        <spark.version>3.1.2</spark.version>
+        <iceberg.version>0.12.1</iceberg.version>
+        <hbase.version>2.1.0</hbase.version>
+        <log4j.version>1.2.17</log4j.version>
+        <slf4j.version>1.7.15</slf4j.version>
+        <junit.version>4.12</junit.version>
+        <spring-boot.version>2.1.13.RELEASE</spring-boot.version>
+    </properties>
     <modules>
         <module>szt-etl</module>
         <module>szt-common</module>
         <module>szt-flink</module>
         <module>szt-spark</module>
     </modules>
+
 
 
 </project>

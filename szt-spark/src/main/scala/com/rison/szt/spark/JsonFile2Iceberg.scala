@@ -12,6 +12,7 @@ import org.apache.spark.sql.functions._
  * @USER: Rison
  * @DATE: 2022/5/5 12:20
  * @PROJECT_NAME: iceberg-szt-traffic
+ * 本地json文件数据导入到ods
  * */
 
 object JsonFile2Iceberg extends Logging {

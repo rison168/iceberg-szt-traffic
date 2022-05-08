@@ -10,6 +10,7 @@ import org.apache.spark.sql.SparkSession
  * @USER: Rison
  * @DATE: 2022/5/6 17:30
  * @PROJECT_NAME: iceberg-szt-traffic
+ * 过滤重复的数据
  * */
 
 object IcebergOds2Dwd extends Logging{
@@ -68,7 +69,7 @@ object IcebergOds2Dwd extends Logging{
 /*
 /usr/hdp/2.2.0.0-2041/spark/bin/spark-submit  --class com.rison.szt.spark.IcebergOds2Dwd \
     --master yarn \
-    --deploy-mode client \
+    --deploy-mode cluster \
     --driver-memory 500m \
     --executor-memory 500m \
     --executor-cores 1 \

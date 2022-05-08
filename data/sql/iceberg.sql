@@ -18,3 +18,19 @@ equ_no String
 partitioned by (days(close_date))
 ;
 
+-- 创建dwd表 主要是过滤重复数据，保证数据的正确性
+create table IF NOT EXISTS szt_db.dwd_szt_data (
+deal_date String,
+close_date timestamp ,
+card_no String,
+deal_value String,
+deal_type String,
+company_name String,
+car_no String,
+station String,
+conn_mark String,
+deal_money String,
+equ_no String
+) using iceberg
+partitioned by (days(close_date))
+;

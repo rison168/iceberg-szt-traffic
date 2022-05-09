@@ -60,7 +60,7 @@ object SubwayCardDataApplication extends Logging{
 
     val frame: DataFrame = sparkSession.sql(sql)
     val count: Long = sparkSession.sql("SELECT * FROM spark_catalog.szt_db.dwd_szt_subway_data").count()
-    logInfo(s"======SubwayCardDataApplication finish! ======== \n dwd_szt_subway_data countNum = $count")
+    logInfo(s"======SubwayCardDataApplication ! ======== \n dwd_szt_subway_data countNum = $count")
     sparkSession.close()
   }
 }

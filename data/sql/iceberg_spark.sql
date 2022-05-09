@@ -84,3 +84,72 @@ ORDER BY deal_date;
 -- 22/05/09 01:03:01 WARN HiveConf: HiveConf of name hive.mapred.supports.subdirectories does not exist
 -- 851867
 -- Time taken: 2.787 seconds, Fetched 1 row(s)
+
+--创建dwd表，地铁入站刷卡数据
+create table IF NOT EXISTS szt_db.dwd_szt_subway_in_data (
+deal_date String,
+close_date timestamp ,
+card_no String,
+deal_value String,
+deal_type String,
+company_name String,
+car_no String,
+station String,
+conn_mark String,
+deal_money String,
+equ_no String
+) using iceberg
+partitioned by (days(close_date))
+;
+
+--创建dwd表，地铁出站刷卡数据
+create table IF NOT EXISTS szt_db.dwd_szt_subway_out_data (
+deal_date String,
+close_date timestamp ,
+card_no String,
+deal_value String,
+deal_type String,
+company_name String,
+car_no String,
+station String,
+conn_mark String,
+deal_money String,
+equ_no String
+) using iceberg
+partitioned by (days(close_date))
+;
+
+INSERT OVERWRITE TABLE szt_db.dwd_szt_subway_in_data
+SELECT
+deal_date ,
+close_date  ,
+card_no ,
+deal_value ,
+deal_type ,
+company_name ,
+car_no ,
+station ,
+conn_mark ,
+deal_money ,
+equ_no
+FROM szt_db.dwd_szt_subway_data
+WHERE to_date(close_date) = '2018-09-01' AND deal_type = '地铁入站'
+ORDER BY deal_date;
+
+
+INSERT OVERWRITE TABLE szt_db.dwd_szt_subway_out_data
+SELECT
+    deal_date ,
+    close_date  ,
+    card_no ,
+    deal_value ,
+    deal_type ,
+    company_name ,
+    car_no ,
+    station ,
+    conn_mark ,
+    deal_money ,
+    equ_no
+FROM szt_db.dwd_szt_subway_data
+WHERE to_date(close_date) = '2018-09-01' AND deal_type = '地铁出站'
+ORDER BY deal_date;

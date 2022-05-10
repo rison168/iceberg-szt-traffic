@@ -153,3 +153,37 @@ SELECT
 FROM szt_db.dwd_szt_subway_data
 WHERE to_date(close_date) = '2018-09-01' AND deal_type = '地铁出站'
 ORDER BY deal_date;
+
+
+-- dws 建宽表每天刷卡记录宽表
+CREATE TABLE IF NOT EXISTS szt_db.dws_szt_card_record_wide(
+card_no STRING,
+deal_date_arr ARRAY < STRING > ,
+deal_value_arr ARRAY < STRING > ,
+deal_type_arr ARRAY < STRING > ,
+company_name_arr ARRAY < STRING > ,
+station_arr ARRAY < STRING > ,
+conn_mark_arr ARRAY < STRING > ,
+deal_money_arr ARRAY < STRING > ,
+equ_no_arr ARRAY < STRING > ,
+count BIGINT,
+day TIMESTAMP
+) USING ICEBERG
+PARTITIONED BY(days(day))
+
+INSERT OVERWRITE TABLE szt_db.dws_szt_card_record_wide
+SELECT card_no,
+       collect_list(deal_date),
+       collect_list(deal_value),
+       collect_list(deal_type),
+       collect_list(company_name),
+       collect_list(station),
+       collect_list(conn_mark),
+       collect_list(deal_money),
+       collect_list(equ_no),
+       count(*) AS card_no_count,
+       CAST ('2018-09-01' AS  TIMESTAMP)
+FROM szt_db.dwd_szt_subway_data
+WHERE to_date(close_date) = '2018-09-01'
+GROUP BY card_no
+ORDER BY card_no_count DESC;

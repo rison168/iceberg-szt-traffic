@@ -187,3 +187,55 @@ FROM szt_db.dwd_szt_subway_data
 WHERE to_date(close_date) = '2018-09-01'
 GROUP BY card_no
 ORDER BY card_no_count DESC;
+
+--ADS 业务表 当天出、入地铁排名明细表
+CREATE TABLE IF NOT EXISTS szt_db.ads_szt_in_station_top(
+station STRING,
+deal_date_arr ARRAY < STRING > ,
+card_no_arr ARRAY < STRING > ,
+company_name_arr ARRAY < STRING > ,
+equ_no_arr ARRAY < STRING > ,
+count BIGINT,
+day TIMESTAMP
+) USING ICEBERG
+PARTITIONED BY (days(day));
+
+CREATE TABLE IF NOT EXISTS szt_db.ads_szt_out_station_top(
+station STRING,
+deal_date_arr ARRAY < STRING > ,
+card_no_arr ARRAY < STRING > ,
+company_name_arr ARRAY < STRING > ,
+equ_no_arr ARRAY < STRING > ,
+count BIGINT,
+day TIMESTAMP
+) USING ICEBERG
+PARTITIONED BY (days(day));
+
+
+INSERT OVERWRITE TABLE szt_db.ads_szt_in_station_top
+SELECT
+station,
+collect_list(deal_date),
+collect_list(card_no),
+collect_list(company_name),
+collect_list(equ_no),
+count(*) AS count,
+CAST ('2018-09-01' AS TIMESTAMP)
+FROM szt_db.dwd_szt_subway_in_data
+WHERE to_date(close_date) = '2018-09-01'
+GROUP By station
+ORDER BY count DESC;
+
+INSERT OVERWRITE TABLE szt_db.ads_szt_out_station_top
+SELECT
+station,
+collect_list(deal_date),
+collect_list(card_no),
+collect_list(company_name),
+collect_list(equ_no),
+count(*) AS count,
+CAST ('2018-09-01' AS TIMESTAMP)
+FROM szt_db.dwd_szt_subway_out_data
+WHERE to_date(close_date) = '2018-09-01'
+GROUP BY station
+ORDER BY count DESC;

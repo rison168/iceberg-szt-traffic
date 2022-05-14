@@ -242,14 +242,14 @@ ORDER BY count DESC;
 
 -- 当日消费排行
 
-CREATE TABLE IF NOT EXISTS ads_szt_card_deal_top(
+CREATE TABLE IF NOT EXISTS szt_db.ads_szt_card_deal_top(
 card_no STRING,
 deal_date_arr ARRAY<STRING>,
-deal_sum DOUBLE,
+deal_value_sum DOUBLE,
 company_name_arr ARRAY<STRING>,
 station_arr ARRAY<STRING>,
 conn_mark_arr ARRAY<STRING>,
-deal_m_sum DOUBLE,
+deal_money_sum DOUBLE,
 equ_no_arr ARRAY<STRING>,
 count bigint,
 day TIMESTAMP
@@ -257,7 +257,34 @@ day TIMESTAMP
 PARTITIONED BY (days(day))
 ;
 
-INSERT OVERWRITE TABLE ads_szt_card_deal_top(
+INSERT OVERWRITE TABLE szt_db.ads_szt_card_deal_top
+SELECT
+a.card_no,
+a.deal_date_arr,
+b.deal_value_sum,
+a.company_name_arr,
+a.station_arr,
+a.conn_mark_arr,
+c.deal_money_sum,
+a.equ_no_arr,
+a.count,
+CAST ('2018-09-01' AS  TIMESTAMP)
+FROM szt_db.dws_szt_card_record_wide AS a,
+     (SELECT
+         card_no,
+         SUM(deal_v) OVER(PARTITION BY card_no) AS deal_value_sum
+     FROM szt_db.dws_szt_card_record_wide
+     LATERAL VIEW explode(deal_value_arr) as deal_v) AS b,
+     (SELECT
+          card_no,
+          SUM(deal_m) OVER(PARTITION BY card_no) AS deal_money_sum
+      FROM szt_db.dws_szt_card_record_wide
+      LATERAL VIEW explode(deal_money_arr) as deal_m) AS c
+WHERE to_date(a.day) = '2018-09-01'
+      AND a.card_no = b.card_no
+      AND a.card_no = c.card_no
+ORDER BY b.deal_value_sum DESC
+;
 
-)
+
 

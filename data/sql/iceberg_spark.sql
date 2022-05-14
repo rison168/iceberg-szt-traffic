@@ -239,3 +239,25 @@ FROM szt_db.dwd_szt_subway_out_data
 WHERE to_date(close_date) = '2018-09-01'
 GROUP BY station
 ORDER BY count DESC;
+
+-- 当日消费排行
+
+CREATE TABLE IF NOT EXISTS ads_szt_card_deal_top(
+card_no STRING,
+deal_date_arr ARRAY<STRING>,
+deal_sum DOUBLE,
+company_name_arr ARRAY<STRING>,
+station_arr ARRAY<STRING>,
+conn_mark_arr ARRAY<STRING>,
+deal_m_sum DOUBLE,
+equ_no_arr ARRAY<STRING>,
+count bigint,
+day TIMESTAMP
+) USING ICEBERG
+PARTITIONED BY (days(day))
+;
+
+INSERT OVERWRITE TABLE ads_szt_card_deal_top(
+
+)
+

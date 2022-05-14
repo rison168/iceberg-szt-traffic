@@ -78,6 +78,7 @@ object SubwayCardDataInAndOutApplication extends Logging{
     sparkSession.sql(outSql)
     val inCount: Long = sparkSession.sql("SELECT * FROM spark_catalog.szt_db.dwd_szt_subway_in_data").count()
     val outCount: Long = sparkSession.sql("SELECT * FROM spark_catalog.szt_db.dwd_szt_subway_out_data").count()
+    sparkSession.sql("SELECT * FROM spark_catalog.szt_db.dwd_szt_subway_in_data").show(100)
     logInfo(s"=======SubwayCardDataInAndOutApplication finish ! ========= \n inCount = $inCount  \n outCount = $outCount")
     sparkSession.close()
   }

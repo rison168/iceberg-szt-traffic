@@ -269,20 +269,18 @@ c.deal_money_sum,
 a.equ_no_arr,
 a.count,
 CAST ('2018-09-01' AS  TIMESTAMP)
-FROM szt_db.dws_szt_card_record_wide AS a,
-     (SELECT
+FROM szt_db.dws_szt_card_record_wide AS a
+LEFT JOIN (SELECT
          card_no,
-         SUM(deal_v) OVER(PARTITION BY card_no) AS deal_value_sum
+         SUM(deal_v) AS deal_value_sum
      FROM szt_db.dws_szt_card_record_wide
-     LATERAL VIEW explode(deal_value_arr) as deal_v) AS b,
-     (SELECT
+     LATERAL VIEW explode(deal_value_arr) as deal_v GROUP BY card_no) AS b  ON a.card_no = b.card_no
+LEFT JOIN (SELECT
           card_no,
-          SUM(deal_m) OVER(PARTITION BY card_no) AS deal_money_sum
+          SUM(deal_m) AS deal_money_sum
       FROM szt_db.dws_szt_card_record_wide
-      LATERAL VIEW explode(deal_money_arr) as deal_m) AS c
+      LATERAL VIEW explode(deal_money_arr) as deal_m GROUP BY card_no) AS c ON a.card_no = c.card_no
 WHERE to_date(a.day) = '2018-09-01'
-      AND a.card_no = b.card_no
-      AND a.card_no = c.card_no
 ORDER BY b.deal_value_sum DESC
 ;
 
